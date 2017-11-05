@@ -6,4 +6,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="send_message">send message</string>
+    <string name="email_error">Add user email</string>
+    <string name="pass_error">Add user password</string>
+    <string name="name_error">Add user name</string>
 </resources>

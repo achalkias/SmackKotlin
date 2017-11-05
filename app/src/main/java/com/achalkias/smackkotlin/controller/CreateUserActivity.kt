@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.achalkias.smackkotlin.R
 import com.achalkias.smackkotlin.services.AuthService
+import com.achalkias.smackkotlin.services.UserDataService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -38,8 +39,27 @@ class CreateUserActivity : AppCompatActivity() {
 
     fun createUserBtnClicked(view: View) {
 
+        val userName = crateUserNameText.text.toString()
         val userEmail = createEmailText.text.toString()
         val userPasss = createPasswordText.text.toString()
+
+        if (userName.isEmpty()) {
+            crateUserNameText.setError(getString(R.string.name_error))
+            crateUserNameText.requestFocus()
+            return
+        }
+
+        if (userEmail.isEmpty()) {
+            createEmailText.setError(getString(R.string.email_error))
+            createEmailText.requestFocus()
+            return
+        }
+
+        if (userPasss.isEmpty()) {
+            createPasswordText.setError(getString(R.string.pass_error))
+            createPasswordText.requestFocus()
+            return
+        }
 
         AuthService.registerUser(this, userEmail, userPasss) { registerSuccess, message ->
             if (registerSuccess) {
@@ -49,6 +69,19 @@ class CreateUserActivity : AppCompatActivity() {
                     if (loginSuccess) {
                         println(AuthService.authToken)
                         println(AuthService.userEmail)
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                        // Create the user
+                        AuthService.createUser(this, userName, userEmail, userAvatar, avatarColor) { createUserSucces, message ->
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                            if (createUserSucces) {
+                                println(UserDataService.name)
+                                println(UserDataService.id)
+                            }
+                            finish()
+                        }
+
+                    } else {
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                     }
                 }
 
