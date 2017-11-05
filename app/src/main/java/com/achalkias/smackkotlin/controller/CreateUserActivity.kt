@@ -67,17 +67,15 @@ class CreateUserActivity : AppCompatActivity() {
 
         enableSpinner(true)
 
-        AuthService.registerUser(this, userEmail, userPasss) { registerSuccess, message ->
+        AuthService.registerUser(userEmail, userPasss) { registerSuccess, message ->
             if (registerSuccess) {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 //Login the user
-                AuthService.loginUser(this, userEmail, userPasss) { loginSuccess, message ->
+                AuthService.loginUser(userEmail, userPasss) { loginSuccess, message ->
                     if (loginSuccess) {
-                        println(AuthService.authToken)
-                        println(AuthService.userEmail)
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                         // Create the user
-                        AuthService.createUser(this, userName, userEmail, userAvatar, avatarColor) { createUserSucces, message ->
+                        AuthService.createUser(userName, userEmail, userAvatar, avatarColor) { createUserSucces, message ->
                             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                             if (createUserSucces) {
                                 println(UserDataService.name)

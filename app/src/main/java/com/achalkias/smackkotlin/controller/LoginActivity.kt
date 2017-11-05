@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         enableSpinner(true)
         hideKeyboard()
 
-        AuthService.loginUser(this, email, password) { loginSuccess, message ->
+        AuthService.loginUser(email, password) { loginSuccess, message ->
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             if (loginSuccess) {
                 AuthService.findUserByEmail(this) { findSuccess, message ->
