@@ -11,10 +11,12 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import com.achalkias.smackkotlin.Adapters.MessageAdapter
 import com.achalkias.smackkotlin.App
 import com.achalkias.smackkotlin.Model.Channel
 import com.achalkias.smackkotlin.Model.Message
@@ -39,10 +41,15 @@ class MainActivity : AppCompatActivity() {
 
     var selectedChannel: Channel? = null
 
+    lateinit var messagesAdapter: MessageAdapter
 
     private fun setupAdapters() {
         channelAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, MessageService.channels)
         channelList.adapter = channelAdapter
+        messagesAdapter = MessageAdapter(this, MessageService.messages)
+        messagesListView.adapter = messagesAdapter
+        val layoutManager = LinearLayoutManager(this)
+        messagesListView.layoutManager = layoutManager
     }
 
 
@@ -115,8 +122,9 @@ class MainActivity : AppCompatActivity() {
         if (selectedChannel != null) {
             MessageService.getMessages(selectedChannel!!.id) { complete ->
                 if (complete) {
-                    for (message in MessageService.messages) {
-                        println(message.message)
+                    messagesAdapter.notifyDataSetChanged()
+                    if (messagesAdapter.itemCount > 0) {
+                        messagesListView.smoothScrollToPosition(messagesAdapter.itemCount - 1)
                     }
                 }
             }
@@ -127,6 +135,8 @@ class MainActivity : AppCompatActivity() {
     fun loginBtnNavClicked(view: View) {
         if (App.prefs.isLoggedIn) {
             UserDataService.logout()
+            channelAdapter.notifyDataSetChanged()
+            messagesAdapter.notifyDataSetChanged()
             userNameNavHeader.text = ""
             userEmailNavHeader.text = ""
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
@@ -196,7 +206,8 @@ class MainActivity : AppCompatActivity() {
 
                     val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, id, timestamp)
                     MessageService.messages.add(newMessage)
-                    println(newMessage.message)
+                    messagesAdapter.notifyDataSetChanged()
+                    messagesListView.smoothScrollToPosition(messagesAdapter.itemCount - 1)
                 }
             }
         }
