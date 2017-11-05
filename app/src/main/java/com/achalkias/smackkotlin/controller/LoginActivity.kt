@@ -46,8 +46,8 @@ class LoginActivity : AppCompatActivity() {
         AuthService.loginUser(email, password) { loginSuccess, message ->
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             if (loginSuccess) {
-                AuthService.findUserByEmail(this) { findSuccess, message ->
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                AuthService.findUserByEmail(this) { findSuccess, m ->
+                    Toast.makeText(this, m, Toast.LENGTH_SHORT).show()
                     if (findSuccess) {
                         enableSpinner(false)
                         finish()

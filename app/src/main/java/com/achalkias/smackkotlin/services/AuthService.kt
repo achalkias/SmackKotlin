@@ -65,10 +65,10 @@ object AuthService {
                 complete(true, "Successfully logged in")
             } catch (e: JSONException) {
                 complete(false, "Try again later")
-                Log.d("JSON", "Could not register user ${e.localizedMessage}")
+                Log.d("JSON", "Could not Login user ${e.localizedMessage}")
             }
         }, Response.ErrorListener { error ->
-            Log.d("ERROR", "Could not register user $error")
+            Log.d("ERROR", "Could not Login user $error")
             complete(false, error.toString())
 
         }) {
@@ -96,7 +96,7 @@ object AuthService {
 
 
         val createRequest = object : JsonObjectRequest(Method.POST, URL_CREATE_USER, null, Response.Listener { response ->
-
+            println(response)
             try {
 
                 UserDataService.name = response.getString("name")
@@ -135,8 +135,10 @@ object AuthService {
     }
 
     fun findUserByEmail(context: Context, complete: (Boolean, String) -> Unit) {
-        val findUserRequest = object : JsonObjectRequest(Method.GET, "$URL_GET_USER${App.prefs.userEmail}", null, Response.Listener { response ->
-
+        val url = "$URL_GET_USER${App.prefs.userEmail}"
+        print(url)
+        val findUserRequest = object : JsonObjectRequest(Method.GET, url, null, Response.Listener { response ->
+            println("Find user by email: $response")
             try {
                 UserDataService.name = response.getString("name")
                 UserDataService.email = response.getString("email")
@@ -150,6 +152,7 @@ object AuthService {
 
             } catch (e: JSONException) {
                 Log.d("JSON", "EXC" + e.localizedMessage)
+                complete(false, "There was an error")
             }
 
         }, Response.ErrorListener { error ->
@@ -163,6 +166,7 @@ object AuthService {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 headers.put("Authorization", "Bearer ${App.prefs.authToken}")
+                headers.put("Accept", "application/json")
                 return headers
             }
         }

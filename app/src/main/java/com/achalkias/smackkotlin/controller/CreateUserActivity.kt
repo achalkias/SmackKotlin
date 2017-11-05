@@ -75,7 +75,7 @@ class CreateUserActivity : AppCompatActivity() {
                     if (loginSuccess) {
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                         // Create the user
-                        AuthService.createUser(userName, userEmail, userAvatar, avatarColor) { createUserSucces, message ->
+                        AuthService.createUser(userEmail, userName, userAvatar, avatarColor) { createUserSucces, message ->
                             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                             if (createUserSucces) {
                                 println(UserDataService.name)

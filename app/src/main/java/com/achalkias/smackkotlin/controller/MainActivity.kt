@@ -57,14 +57,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        socket.connect()
+        socket.on("channelCreated", onNewChannel)
+        socket.on("messageCreated", onNewMessage)
+
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        socket.connect()
-        socket.on("channelCreated", onNewChannel)
-        socket.on("messageCreated", onNewMessage)
 
         setupAdapters()
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter(BROADCAST_USER_DATA_CHANGE))
@@ -105,6 +106,7 @@ class MainActivity : AppCompatActivity() {
                         if (MessageService.channels.count() > 0) {
                             selectedChannel = MessageService.channels[0]
                             channelAdapter.notifyDataSetChanged()
+                            updateWithChannel()
                         }
                     }
 
@@ -179,7 +181,7 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 val channelName = args[0] as String
                 val channelDescription = args[1] as String
-                val channelId = args[3] as String
+                val channelId = args[2] as String
 
                 val newChannel = Channel(channelName, channelDescription, channelId)
                 MessageService.channels.add(newChannel)

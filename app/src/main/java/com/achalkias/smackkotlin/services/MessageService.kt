@@ -41,7 +41,7 @@ object MessageService {
             }
 
         }, Response.ErrorListener { error ->
-            Log.d("ERROR", "Could not find user $error")
+            Log.d("ERROR", "Could not find channel $error")
             complete(false)
 
         }) {
@@ -65,6 +65,7 @@ object MessageService {
 
         val messagesRequest = object : JsonArrayRequest(Method.GET, url, null, Response.Listener { response ->
             try {
+                messages.clear()
                 for (x in 0 until response.length()) {
                     val message = response.getJSONObject(x)
                     val messageBody = message.getString("messageBody")
@@ -73,7 +74,7 @@ object MessageService {
                     val userName = message.getString("userName")
                     val userAvatar = message.getString("userAvatar")
                     val userAvatarColor = message.getString("userAvatarColor")
-                    val timestamp = message.getString("timestamp")
+                    val timestamp = message.getString("timeStamp")
                     val newMessage = Message(messageBody, userName, channelId, userAvatar, userAvatarColor, id, timestamp)
                     this.messages.add(newMessage)
                 }
@@ -86,7 +87,7 @@ object MessageService {
             }
 
         }, Response.ErrorListener { error ->
-            Log.d("ERROR", "Could not find user $error")
+            Log.d("ERROR", "Could not find messages $error")
             complete(false)
 
         }) {
