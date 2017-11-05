@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import com.achalkias.smackkotlin.App
 import com.achalkias.smackkotlin.Model.Channel
+import com.achalkias.smackkotlin.Model.Message
 import com.achalkias.smackkotlin.R
 import com.achalkias.smackkotlin.services.AuthService
 import com.achalkias.smackkotlin.services.MessageService
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         socket.connect()
         socket.on("channelCreated", onNewChannel)
+        socket.on("messageCreated", onNewMessage)
 
         setupAdapters()
 
@@ -168,8 +170,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val onNewMessage = Emitter.Listener { args ->
+        runOnUiThread {
+            val msgBody = args[0] as String
+            val channelId = args[2] as String
+            val userName = args[3] as String
+            val userAvatar = args[4] as String
+            val userAvatarColor = args[5] as String
+            val id = args[6] as String
+            val timestamp = args[7] as String
+
+            val newMessage = Message(msgBody, userName, channelId, userAvatar, userAvatarColor, id, timestamp)
+            MessageService.messages.add(newMessage)
+            println(newMessage.message)
+        }
+    }
+
+
     fun sendMessageBtnClicked(view: View) {
-        hideKeyboard()
+        if (App.prefs.isLoggedIn &&
+                messagesTextField.text.isNotEmpty() &&
+                selectedChannel != null) {
+            val userId = UserDataService.id
+            val channelId = selectedChannel!!.id
+            socket.emit("newMessage", messagesTextField.text.toString(), userId, channelId,
+                    UserDataService.name, UserDataService.avatarName, UserDataService.avatarColor)
+            messagesTextField.text.clear()
+            hideKeyboard()
+        }
     }
 
 

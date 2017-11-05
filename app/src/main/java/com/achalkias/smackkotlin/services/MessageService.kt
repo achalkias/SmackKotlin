@@ -3,6 +3,7 @@ package com.achalkias.smackkotlin.services
 import android.util.Log
 import com.achalkias.smackkotlin.App
 import com.achalkias.smackkotlin.Model.Channel
+import com.achalkias.smackkotlin.Model.Message
 import com.achalkias.smackkotlin.utilities.URL_GET_CHANNELS
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
@@ -16,6 +17,7 @@ object MessageService {
 
 
     val channels = ArrayList<Channel>()
+    val messages = ArrayList<Message>()
 
     fun getChannels(complete: (Boolean) -> Unit) {
 
