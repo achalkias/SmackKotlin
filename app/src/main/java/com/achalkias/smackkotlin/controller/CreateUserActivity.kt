@@ -42,7 +42,7 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserBtnClicked(view: View) {
-        enableSpinner(true)
+
         val userName = crateUserNameText.text.toString()
         val userEmail = createEmailText.text.toString()
         val userPasss = createPasswordText.text.toString()
@@ -64,6 +64,8 @@ class CreateUserActivity : AppCompatActivity() {
             createPasswordText.requestFocus()
             return
         }
+
+        enableSpinner(true)
 
         AuthService.registerUser(this, userEmail, userPasss) { registerSuccess, message ->
             if (registerSuccess) {
